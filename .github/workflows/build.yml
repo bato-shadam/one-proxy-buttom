@@ -1,0 +1,28 @@
+
+name: Build EXE
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller
+          pip install -r requirements.txt
+      - name: Build EXE
+        run: |
+          pyinstaller --onefile one_button_proxy.py --hidden-import=requests --hidden-import=socks
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: one_button_proxy
+          path: dist/one_button_proxy.exe
